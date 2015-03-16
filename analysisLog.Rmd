@@ -1,0 +1,21 @@
+---
+title: "Analysis for AFRI"
+author: "Nick Miller"
+date: "March 16, 2015"
+output:
+  html_document:
+    theme: cerulean
+---
+
+# Get the data for differentially expressed genes responding to insecticides
+
+Note that "character" columns get read as factors.
+
+```{r}
+library(xlsx)
+thiamethoxam <- read.xlsx("foldchanges.xlsx", 1, colClasses = c("character", "numeric", "character"))
+esfenvalerate <- read.xlsx("foldchanges.xlsx", 2, colClasses = c("character", "numeric", "character"))
+hist(2^thiamethoxam$log.2.foldchg, main="Thiamethoxam", xlab="fold change", col=colors()[562])
+hist(2^esfenvalerate$log.2.foldchg, main="Esfenvalerate", xlab="fold change", col=colors()[630])
+```
+
