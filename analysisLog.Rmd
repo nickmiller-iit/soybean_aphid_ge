@@ -11,7 +11,7 @@ output:
 
 Note that "character" columns get read as factors.
 
-```{r read_insecticide_data, warning=F}
+```{r read_insecticide_data, warning=F, cache=TRUE}
 library(xlsx)
 thiamethoxam <- read.xlsx("foldchanges.xlsx", 1, colClasses = c("character", "numeric", "character"))
 esfenvalerate <- read.xlsx("foldchanges.xlsx", 2, colClasses = c("character", "numeric", "character"))
@@ -33,6 +33,13 @@ blast.results <- subset(blast.results, alignment.length >= 100)
 blast.results <- subset(blast.results, pc.identity >= 98)
 ```
 
-The fasta file of genes described in the Bansla paper contains 158 contigs, after subsetting blast.results contains `r length(blast.results[,1])` entries. Of the 158 Bansal contigs `r length(unique(blast.results$query.id))` have at least one entry, which isn't to bad = `r round((length(unique(blast.results$query.id))/158) * 100, 1)` percent.
+The fasta file of genes described in the Bansal paper contains 158 contigs, after subsetting blast.results contains `r length(blast.results[,1])` entries. Of the 158 Bansal contigs `r length(unique(blast.results$query.id))` have at least one entry, which isn't to bad = `r round((length(unique(blast.results$query.id))/158) * 100, 1)` percent.
 
+# Read in lists of Rag1 up and downregulated genes from Bansal et al
+
+```{r read_rag1, cache=TRUE}
+rag1.up <- read.xlsx("Bansal_diffreged.xlsx", 1)
+rag1.down <- read.xlsx("Bansal_diffreged.xlsx", 2)
+
+```
 
