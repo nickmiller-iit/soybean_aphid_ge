@@ -11,11 +11,28 @@ output:
 
 Note that "character" columns get read as factors.
 
-```{r}
+```{r read_insecticide_data, warning=F}
 library(xlsx)
 thiamethoxam <- read.xlsx("foldchanges.xlsx", 1, colClasses = c("character", "numeric", "character"))
 esfenvalerate <- read.xlsx("foldchanges.xlsx", 2, colClasses = c("character", "numeric", "character"))
 hist(2^thiamethoxam$log.2.foldchg, main="Thiamethoxam", xlab="fold change", col=colors()[562])
 hist(2^esfenvalerate$log.2.foldchg, main="Esfenvalerate", xlab="fold change", col=colors()[630])
 ```
+
+# Get the correpondences between genes identified by Bansal et al and us
+
+They used a different reference than we did (another argument for having useable genomes). We can see which of their genes correspond to which of ours using blast.
+1. Set up a blast db of Sijun's reference transcriptome.
+2. Run sequences of differentially expressed genes from Bansal as queries.
+3. Identify hits - not that 1 Bansal seq could legitimately hit >1 of Sijun's seqs, but we do want to filter out poor hits (short, mismatches)
+
+```{r read_blast_results}
+blast.results <- read.table("blastout")
+names(blast.results) <- c("query.id", "subject.id", "pc.identity", "alignment.length", "mismatches", "gap.openings", "q.start", "q.end", "s.start", "s.end", "e-value", "bit.score")
+blast.results <- subset(blast.results, alignment.length >= 100)
+blast.results <- subset(blast.results, pc.identity >= 98)
+```
+
+The fasta file of genes described in the Bansla paper contains 158 contigs, after subsetting blast.results contains `r length(blast.results[,1])` entries. Of the 158 Bansal contigs `r length(unique(blast.results$query.id))` have at least one entry, which isn't to bad = `r round((length(unique(blast.results$query.id))/158) * 100, 1)` percent.
+
 
