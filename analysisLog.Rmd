@@ -61,7 +61,7 @@ transcripts.rag1.up <- as.character((inner_join(correspondences, rag1.up, by="Se
 transcripts.rag1.down <- as.character((inner_join(correspondences, rag1.down, by="Seq..Name"))$transcript)
 ```
 
-#Compare expression patterns between esfenvalerate and rag1
+#Compare expression patterns between esfenvalerate and Rag1
 
 Get the esfenvalerate up/down regulated transcripts
 
@@ -112,6 +112,56 @@ How many different genes from Bansal's original reference do we have here?
 unique(as.character(subset(correspondences, transcript %in% intersect(transcripts.esfenvalerate.up, transcripts.rag1.up))$Seq..Name))
 
 ```
+
+#Compare expression patterns between thiamethoxam and Rag1
+
+Get thiamethoxam up/down regulate transcripts.
+
+```{r}
+transcripts.thiamethoxam.up <- as.character(subset(thiamethoxam, log.2.foldchg > 0)$transcript)
+transcripts.thiamethoxam.down <- as.character(subset(thiamethoxam, log.2.foldchg < 0)$transcript)
+
+```
+
+Upregulated in both
+
+```{r}
+intersect(transcripts.thiamethoxam.up, transcripts.rag1.up)
+
+```
+
+Note that this is also a shared upregulated transcript between esfenvalerate and Rag1.
+
+Downregulated in both
+
+```{r}
+intersect(transcripts.thiamethoxam.down, transcripts.rag1.down)
+
+```
+
+What is this?
+
+```{r}
+subset(thiamethoxam, transcript %in% intersect(transcripts.thiamethoxam.down, transcripts.rag1.down))$gene
+```
+
+An esterase. Note that overporduction of these often implicated in OP resistance.
+
+
+Up in thiamethoxam down in Rag1
+
+```{r}
+intersect(transcripts.thiamethoxam.up, transcripts.rag1.down)
+
+```
+
+Down in thiamethoxam, up in Rag1
+
+```{r}
+intersect(transcripts.thiamethoxam.down, transcripts.rag1.up)
+
+```
+
 
 
 
