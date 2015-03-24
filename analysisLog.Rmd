@@ -13,8 +13,8 @@ Note that "character" columns get read as factors.
 
 ```{r read_insecticide_data, warning=F, cache=TRUE}
 library(xlsx)
-thiamethoxam <- read.xlsx("foldchanges.xlsx", 1, colClasses = c("character", "numeric", "character"))
-esfenvalerate <- read.xlsx("foldchanges.xlsx", 2, colClasses = c("character", "numeric", "character"))
+thiamethoxam <- read.xlsx("foldchanges.xlsx", 1, colClasses = c("character", "numeric", "character", "character"))
+esfenvalerate <- read.xlsx("foldchanges.xlsx", 2, colClasses = c("character", "numeric", "character", "character"))
 hist(2^thiamethoxam$log.2.foldchg, main="Thiamethoxam", xlab="fold change", col=colors()[562])
 hist(2^esfenvalerate$log.2.foldchg, main="Esfenvalerate", xlab="fold change", col=colors()[630])
 ```
@@ -53,17 +53,67 @@ rag1.down <- subset(rag1.down, as.character(Seq..Name) %in% unique(as.character(
 We can use the inner_join from dplyr function to map Bansal's contig to ours
 
 ```{r convert_rag1, warning=F, message=F}
-
 library(dplyr)
 
 correspondences <- blast.results[,1:2]
 names(correspondences) <- c("Seq..Name", "transcript")
 transcripts.rag1.up <- as.character((inner_join(correspondences, rag1.up, by="Seq..Name"))$transcript)
 transcripts.rag1.down <- as.character((inner_join(correspondences, rag1.down, by="Seq..Name"))$transcript)
+```
 
+#Compare expression patterns between esfenvalerate and rag1
+
+Get the esfenvalerate up/down regulated transcripts
+
+```{r}
+transcripts.esfenvalerate.up <- as.character(subset(esfenvalerate, log.2.foldchg > 0)$transcript)
+transcripts.esfenvalerate.down <- as.character(subset(esfenvalerate, log.2.foldchg < 0)$transcript)
 
 
 ```
+
+Upregulated in both
+
+```{r}
+intersect(transcripts.esfenvalerate.up, transcripts.rag1.up)
+```
+
+Downregulated in both
+
+```{r}
+intersect(transcripts.esfenvalerate.down, transcripts.rag1.down)
+
+```
+
+Up in esfenvalerate, down in Rag1
+
+```{r}
+intersect(transcripts.esfenvalerate.up, transcripts.rag1.down)
+```
+
+Down in esfenvalerate, up in Rag1
+
+```{r}
+intersect(transcripts.esfenvalerate.down, transcripts.rag1.up)
+```
+
+So we have a few transcripts that are upregulate in both, what are they?
+
+```{r}
+subset(esfenvalerate, transcript %in% intersect(transcripts.esfenvalerate.up, transcripts.rag1.up))$gene
+
+```
+
+All cytochrome P450s
+
+How many different genes from Bansal's original reference do we have here?
+
+```{r}
+unique(as.character(subset(correspondences, transcript %in% intersect(transcripts.esfenvalerate.up, transcripts.rag1.up))$Seq..Name))
+
+```
+
+
 
 
 
