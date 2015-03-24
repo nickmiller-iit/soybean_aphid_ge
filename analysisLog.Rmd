@@ -162,6 +162,42 @@ intersect(transcripts.thiamethoxam.down, transcripts.rag1.up)
 
 ```
 
+#For completeness, compare esfenvalerate and thiamethoxam
+
+Both up
+
+```{r}
+intersect(transcripts.esfenvalerate.up, transcripts.thiamethoxam.up)
+subset(esfenvalerate, transcript %in% intersect(transcripts.esfenvalerate.up, transcripts.thiamethoxam.up))$gene
+
+
+```
+
+Both down
+
+```{r}
+intersect(transcripts.esfenvalerate.down, transcripts.thiamethoxam.down)
+subset(esfenvalerate, transcript %in% intersect(transcripts.esfenvalerate.down, transcripts.thiamethoxam.down))$gene
+
+```
+
+Up in esfenvalerate, down in thiamethoxam
+
+```{r}
+intersect(transcripts.esfenvalerate.up, transcripts.thiamethoxam.down)
+
+```
+
+Down in esfenvalerate, up in thiamethoxam
+
+```{r}
+intersect(transcripts.esfenvalerate.down, transcripts.thiamethoxam.up)
+
+```
+
+
+
+
 
 
 
