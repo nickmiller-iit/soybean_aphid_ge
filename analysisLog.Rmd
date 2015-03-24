@@ -35,11 +35,35 @@ blast.results <- subset(blast.results, pc.identity >= 98)
 
 The fasta file of genes described in the Bansal paper contains 158 contigs, after subsetting blast.results contains `r length(blast.results[,1])` entries. Of the 158 Bansal contigs `r length(unique(blast.results$query.id))` have at least one entry, which isn't to bad = `r round((length(unique(blast.results$query.id))/158) * 100, 1)` percent.
 
-# Read in lists of Rag1 up and downregulated genes from Bansal et al
+# Get Rag1 up and downregulated genes from Bansal et al
+
+Read in data from supplementary info file.
 
 ```{r read_rag1, cache=TRUE}
 rag1.up <- read.xlsx("Bansal_diffreged.xlsx", 1)
 rag1.down <- read.xlsx("Bansal_diffreged.xlsx", 2)
+```
+
+Now we need to get these converted over to the transcript set we are using. First thing to do is extract only those for which we have a blast-based correspondence.
+
+```{r extract_with_correpondnce, cache=TRUE}
+rag1.up <- subset(rag1.up, as.character(Seq..Name) %in% unique(as.character(blast.results$query.id)))
+rag1.down <- subset(rag1.down, as.character(Seq..Name) %in% unique(as.character(blast.results$query.id)))
+```
+We can use the inner_join from dplyr function to map Bansal's contig to ours
+
+```{r convert_rag1, warning=F, message=F}
+
+library(dplyr)
+
+correspondences <- blast.results[,1:2]
+names(correspondences) <- c("Seq..Name", "transcript")
+transcripts.rag1.up <- as.character((inner_join(correspondences, rag1.up, by="Seq..Name"))$transcript)
+transcripts.rag1.down <- as.character((inner_join(correspondences, rag1.down, by="Seq..Name"))$transcript)
+
+
 
 ```
+
+
 
